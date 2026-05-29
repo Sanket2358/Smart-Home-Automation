@@ -1,23 +1,64 @@
-import firebase_admin
-from firebase_admin import credentials, db
-from datetime import datetime
-dt = datetime.now().timestamp()
-run = 1 if dt-1755237355<0 else 0
-import time
+import random
+
+# ================= DEVICE STATES =================
+
+device_states = {
+
+    "lamp1": 0,
+    "lamp2": 0,
+    "fan": 0,
+    "ac": 0,
+    "tv": 0,
+    "security": 0
+
+}
+
+# ================= DEVICE POWER USAGE =================
+
+device_power = {
+
+    "lamp1": 40,
+    "lamp2": 40,
+    "fan": 120,
+    "ac": 1200,
+    "tv": 180,
+    "security": 60
+
+}
+
+# ================= CONTROL DEVICE =================
+
+def writeFirebase(appliance, action):
+
+    device_states[appliance] = int(action)
+
+    print(f"{appliance} set to {action}")
+
+# ================= READ SMART DATA =================
 
 def readFirebase():
-    firebase1 = firebase.FirebaseApplication('https://augmentedreality-af310-default-rtdb.firebaseio.com/', None)
-    voltage = firebase1.get('/AE236/voltage', None)
-    current = firebase1.get('/AE236/current', None)
-    power = voltage*current
-    return(voltage,current,power)
 
+    # Base voltage
+    voltage = random.randint(220, 240)
 
-def writeFirebase(appliance,status):
+    # Base current
+    current = 0.3
 
-    firebase1 = firebase.FirebaseApplication('https://augmentedreality-af310-default-rtdb.firebaseio.com/', None)
-    result = firebase1.put('AE236/',appliance,status)
-    print(result)
+    # Calculate total power
+    total_power = 0
 
+    for device, status in device_states.items():
 
-#print(readFirebase())
+        if status == 1:
+
+            total_power += device_power[device]
+
+    # Small random fluctuation
+    total_power += random.randint(1, 5)
+
+    # Calculate current using formula:
+    # Current = Power / Voltage
+
+    current += round(total_power / voltage, 2)
+
+    return voltage, round(current, 2), total_power

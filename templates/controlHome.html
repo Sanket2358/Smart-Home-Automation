@@ -1,75 +1,1142 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Appliance Control</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-5">
-        <h1 class="text-center">Home Appliance Control</h1>
-        <div class="row mt-4">
-            <!-- Lamp 1 Control -->
-            <div class="col-md-4 text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Lamp 1</h5>
-                        <button class="btn btn-success" onclick="controlAppliance('lamp1', '1')">Turn On</button>
-                        <button class="btn btn-danger" onclick="controlAppliance('lamp1', '0')">Turn Off</button>
-                    </div>
-                </div>
-            </div>
-            <!-- Lamp 2 Control -->
-            <div class="col-md-4 text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Lamp 2</h5>
-                        <button class="btn btn-success" onclick="controlAppliance('lamp2', '1')">Turn On</button>
-                        <button class="btn btn-danger" onclick="controlAppliance('lamp2', '0')">Turn Off</button>
-                    </div>
-                </div>
-            </div>
-            <!-- Fan Control -->
-            <div class="col-md-4 text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Fan</h5>
-                        <button class="btn btn-success" onclick="controlAppliance('fan', '1')">Turn On</button>
-                        <button class="btn btn-danger" onclick="controlAppliance('fan', '0')">Turn Off</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+<style>
+
+    .control-title{
+
+        font-size:34px;
+        font-weight:700;
+        color:#224abe;
+
+    }
+
+    .control-subtitle{
+
+        color:#777;
+        margin-top:5px;
+
+    }
+
+    .device-card{
+
+        position:relative;
+        overflow:hidden;
+        border:none;
+        border-radius:25px;
+        padding:25px;
+        transition:0.4s;
+        backdrop-filter:blur(10px);
+        background:rgba(255,255,255,0.08);
+        box-shadow:0 10px 25px rgba(0,0,0,0.12);
+        animation:fadeUp 0.8s ease;
+
+    }
+
+    .device-card:hover{
+
+        transform:translateY(-8px) scale(1.02);
+        box-shadow:0 20px 35px rgba(0,0,0,0.18);
+
+    }
+
+    .device-card::before{
+
+        content:'';
+        position:absolute;
+        width:180px;
+        height:180px;
+        background:rgba(255,255,255,0.08);
+        border-radius:50%;
+        top:-70px;
+        right:-70px;
+
+    }
+
+    .device-icon{
+
+        font-size:70px;
+        margin-bottom:20px;
+        opacity:0.9;
+
+    }
+
+    .device-name{
+
+        font-size:24px;
+        font-weight:700;
+        margin-bottom:10px;
+
+    }
+
+    .device-status{
+
+        font-size:15px;
+        margin-bottom:25px;
+        opacity:0.9;
+
+    }
+
+    .btn-control{
+
+        border:none;
+        padding:12px 20px;
+        border-radius:12px;
+        font-weight:600;
+        transition:0.3s;
+        width:48%;
+
+    }
+
+    .btn-on{
+
+        background:#1cc88a;
+        color:white;
+
+    }
+
+    .btn-on:hover{
+
+        background:#17a673;
+        transform:translateY(-2px);
+
+    }
+
+    .btn-off{
+
+        background:#e74a3b;
+        color:white;
+
+    }
+
+    .btn-off:hover{
+
+        background:#c0392b;
+        transform:translateY(-2px);
+
+    }
+
+    .lamp-card{
+
+        background:linear-gradient(135deg,#4e73df,#224abe);
+        color:white;
+
+    }
+
+    .fan-card{
+
+        background:linear-gradient(135deg,#36b9cc,#258391);
+        color:white;
+
+    }
+
+    .status-indicator{
+
+        width:12px;
+        height:12px;
+        border-radius:50%;
+        display:inline-block;
+        margin-right:8px;
+        background:#1cc88a;
+        box-shadow:0 0 10px #1cc88a;
+
+    }
+
+    @keyframes fadeUp{
+
+        from{
+            opacity:0;
+            transform:translateY(40px);
+        }
+
+        to{
+            opacity:1;
+            transform:translateY(0);
+        }
+
+    }
+
+    .main-wrapper{
+
+        padding-top:10px;
+
+    }
+
+    @media(max-width:768px){
+
+        .control-title{
+
+            font-size:26px;
+
+        }
+
+        .device-card{
+
+            padding:20px;
+
+        }
+
+        .device-icon{
+
+            font-size:55px;
+
+        }
+
+        .device-name{
+
+            font-size:22px;
+
+        }
+
+    }
+
+</style>
+
+<div class="container-fluid main-wrapper">
+
+    <!-- Heading -->
+    <div class="mb-5">
+
+        <h1 class="control-title">
+
+            Smart Home Control Panel
+
+        </h1>
+
+        <p class="control-subtitle">
+
+            Control and monitor your appliances in real-time
+
+        </p>
+
     </div>
 
-    <script>
-        // Function to control appliances
-        function controlAppliance(appliance, action) {
-            fetch(`/control`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    appliance: appliance,
-                    action: action
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-    </script>
+    <!-- Appliance Cards -->
+    <div class="row">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+        <!-- Lamp 1 -->
+        <div class="col-xl-4 col-md-6 mb-4">
+
+            <div class="device-card lamp-card text-center">
+
+                <i class="fas fa-lightbulb device-icon"></i>
+
+                <div class="device-name">
+
+                    Lamp 1
+
+                </div>
+
+                <div class="device-status">
+
+                    <span class="status-indicator"></span>
+
+                    <span id="lamp1Status">
+
+                        Connected Device
+
+                    </span>
+
+                </div>
+
+                <div class="d-flex justify-content-between">
+
+                    <button
+                        class="btn-control btn-on"
+                        onclick="controlAppliance('lamp1', '1')">
+
+                        Turn ON
+
+                    </button>
+
+                    <button
+                        class="btn-control btn-off"
+                        onclick="controlAppliance('lamp1', '0')">
+
+                        Turn OFF
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Lamp 2 -->
+        <div class="col-xl-4 col-md-6 mb-4">
+
+            <div class="device-card lamp-card text-center">
+
+                <i class="fas fa-lightbulb device-icon"></i>
+
+                <div class="device-name">
+
+                    Lamp 2
+
+                </div>
+
+                <div class="device-status">
+
+                    <span class="status-indicator"></span>
+
+                    <span id="lamp2Status">
+
+                        Connected Device
+
+                    </span>
+
+                </div>
+
+                <div class="d-flex justify-content-between">
+
+                    <button
+                        class="btn-control btn-on"
+                        onclick="controlAppliance('lamp2', '1')">
+
+                        Turn ON
+
+                    </button>
+
+                    <button
+                        class="btn-control btn-off"
+                        onclick="controlAppliance('lamp2', '0')">
+
+                        Turn OFF
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Fan -->
+        <div class="col-xl-4 col-md-6 mb-4">
+
+            <div class="device-card fan-card text-center">
+
+                <i class="fas fa-fan device-icon"></i>
+
+                <div class="device-name">
+
+                    Smart Fan
+
+                </div>
+
+                <div class="device-status">
+
+                    <span class="status-indicator"></span>
+
+                    <span id="fanStatus">
+
+                        Connected Device
+
+                    </span>
+
+                </div>
+
+                <div class="d-flex justify-content-between">
+
+                    <button
+                        class="btn-control btn-on"
+                        onclick="controlAppliance('fan', '1')">
+
+                        Turn ON
+
+                    </button>
+
+                    <button
+                        class="btn-control btn-off"
+                        onclick="controlAppliance('fan', '0')">
+
+                        Turn OFF
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- Extra Smart Devices -->
+<div class="row mt-2">
+
+    <!-- Smart AC -->
+    <div class="col-xl-4 col-md-6 mb-4">
+
+        <div class="device-card text-center"
+            style="background:linear-gradient(135deg,#8e44ad,#6c3483);color:white;">
+
+            <i class="fas fa-snowflake device-icon"></i>
+
+            <div class="device-name">
+
+                Smart AC
+
+            </div>
+
+            <div class="device-status">
+
+                <span class="status-indicator"></span>
+
+                <span id="acStatus">
+
+                    Temperature Optimized
+
+                </span>
+
+            </div>
+
+            <div class="d-flex justify-content-between">
+
+                <button
+                    class="btn-control btn-on"
+                    onclick="controlAppliance('ac', '1')">
+
+                    Turn ON
+
+                </button>
+
+                <button
+                    class="btn-control btn-off"
+                    onclick="controlAppliance('ac', '0')">
+
+                    Turn OFF
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Smart TV -->
+    <div class="col-xl-4 col-md-6 mb-4">
+
+        <div class="device-card text-center"
+            style="background:linear-gradient(135deg,#e67e22,#d35400);color:white;">
+
+            <i class="fas fa-tv device-icon"></i>
+
+            <div class="device-name">
+
+                Smart TV
+
+            </div>
+
+            <div class="device-status">
+
+                <span class="status-indicator"></span>
+
+                <span id="tvStatus">
+
+                    Connected to WIFI
+
+                </span>
+
+            </div>
+
+            <div class="d-flex justify-content-between">
+
+                <button
+                    class="btn-control btn-on"
+                    onclick="controlAppliance('tv', '1')">
+
+                    Turn ON
+
+                </button>
+
+                <button
+                    class="btn-control btn-off"
+                    onclick="controlAppliance('tv', '0')">
+
+                    Turn OFF
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Security -->
+    <div class="col-xl-4 col-md-6 mb-4">
+
+        <div class="device-card text-center"
+            style="background:linear-gradient(135deg,#e74a3b,#c0392b);color:white;">
+
+            <i class="fas fa-shield-alt device-icon"></i>
+
+            <div class="device-name">
+
+                Security System
+
+            </div>
+
+            <div class="device-status">
+
+                <span class="status-indicator"></span>
+
+                <span id="securityStatus">
+
+                    Home Protected
+
+                </span>
+
+            </div>
+
+            <div class="d-flex justify-content-between">
+
+                <button
+                    class="btn-control btn-on"
+                    onclick="controlAppliance('security', '1')">
+
+                    Activate
+
+                </button>
+
+                <button
+                    class="btn-control btn-off"
+                    onclick="controlAppliance('security', '0')">
+
+                    Disable
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Smart Modes -->
+<div class="row">
+
+    <div class="col-xl-6 mb-4">
+
+        <div class="device-card"
+            style="background:white;">
+
+            <h3 style="font-weight:700;color:#224abe;margin-bottom:20px;">
+
+                Smart Modes
+
+            </h3>
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <button class="btn-control btn-on w-100"
+                        onclick="activateMode('night')"
+                        style="padding:15px;">
+
+                        🌙 Night Mode
+
+                    </button>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <button class="btn-control btn-off w-100"
+                        onclick="activateMode('day')"
+                        style="padding:15px;">
+
+                        ☀️ Day Mode
+
+                    </button>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <button class="btn-control btn-on w-100"
+                        onclick="activateMode('movie')"
+                        style="padding:15px;background:#36b9cc;">
+
+                        🎬 Movie Mode
+
+                    </button>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <button class="btn-control btn-off w-100"
+                        onclick="activateMode('sleep')"
+                        style="padding:15px;background:#8e44ad;">
+
+                        😴 Sleep Mode
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Energy Monitoring -->
+    <div class="col-xl-6 mb-4">
+
+        <div class="device-card"
+            style="background:white;">
+
+            <h3 style="font-weight:700;color:#224abe;margin-bottom:20px;">
+
+                Energy Monitoring
+
+            </h3>
+
+            <p style="font-weight:600;">
+
+                Current Usage
+
+            </p>
+
+            <div class="progress mb-4"
+                style="height:14px;border-radius:20px;">
+
+                <div id="usageBar"
+                    class="progress-bar bg-primary"
+                    style="width:{{ usage_percent }}%;">
+
+                </div>
+
+            </div>
+
+            <p style="font-weight:600;">
+
+                Device Efficiency
+
+            </p>
+
+            <div class="progress mb-4"
+                style="height:14px;border-radius:20px;">
+
+                <div id="efficiencyBar"
+                    class="progress-bar bg-success"
+                    style="width:{{ efficiency }}%;">
+
+                </div>
+
+            </div>
+
+            <p style="font-weight:600;">
+
+                Smart Optimization
+
+            </p>
+
+            <div class="progress"
+                style="height:14px;border-radius:20px;">
+
+                <div id="optimizationBar"
+                    class="progress-bar bg-info"
+                    style="width:{{ optimization }}%;">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Automation Status -->
+<div class="row">
+
+    <div class="col-12">
+
+        <div class="device-card"
+            style="background:linear-gradient(135deg,#4e73df,#224abe);color:white;">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-8">
+
+                    <h2 id="aiTitle" 
+                    style="font-weight:700;">
+
+                         AI Automation Active
+
+                    </h2>
+
+                    <p id="aiMessage"
+                    style="opacity:0.9;font-size:16px;">
+
+                        {% if usage_percent > 80 %}
+
+                        ⚠️ High electricity consumption detected.
+                        AI recommends turning OFF unused appliances.
+
+                        {% elif usage_percent > 40 %}
+
+                        ✅ System running at moderate efficiency.
+
+                        {% else %}
+
+                        🟢 Excellent energy optimization detected.
+                        Smart AI saving electricity successfully.
+
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+                <div class="col-lg-4 text-center">
+
+                    <i class="fas fa-robot"
+                        style="font-size:90px;opacity:0.2;">
+
+                    </i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+    function controlAppliance(appliance, action) {
+
+        fetch('/control', {
+
+            method:'POST',
+
+            headers:{
+                'Content-Type':'application/json'
+            },
+
+            body:JSON.stringify({
+
+                appliance:appliance,
+                action:action
+
+            })
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            showToast(data.message);
+
+        })
+
+        .catch(error => {
+
+            console.error('Error:', error);
+
+            showToast("Connection Error");
+
+        });
+
+    }
+
+    function showToast(message){
+
+        const toast = document.createElement('div');
+
+        toast.innerHTML = message;
+
+        toast.style.position = 'fixed';
+        toast.style.top = '20px';
+        toast.style.right = '20px';
+        toast.style.background = '#224abe';
+        toast.style.color = 'white';
+        toast.style.padding = '15px 25px';
+        toast.style.borderRadius = '12px';
+        toast.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+        toast.style.zIndex = '9999';
+        toast.style.fontWeight = '600';
+
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+
+            toast.remove();
+
+        }, 3000);
+
+    }
+
+    function activateMode(mode){
+
+    fetch('/smart-mode', {
+
+        method:'POST',
+
+        headers:{
+            'Content-Type':'application/json'
+        },
+
+        body:JSON.stringify({
+            mode:mode
+        })
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        showToast(data.message);
+
+    });
+
+}
+
+</script>
+<script>
+
+let refreshRunning = false;
+
+async function refreshControlPanel(){
+
+    // Prevent overlapping requests
+    if(refreshRunning) return;
+
+    refreshRunning = true;
+
+    try{
+
+        const response =
+            await fetch('/api/control-data');
+
+        // Check response
+        if(!response.ok){
+
+            throw new Error(
+                "API Response Error"
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        // ================= SAFE UPDATE FUNCTIONS =================
+
+        function updateElement(id, value){
+
+            const element =
+                document.getElementById(id);
+
+            if(element){
+
+                element.innerHTML = value;
+
+            }
+
+        }
+
+        function updateBar(id, value){
+
+            const element =
+                document.getElementById(id);
+
+            if(element){
+
+                element.style.width =
+                    value + "%";
+
+            }
+
+        }
+
+        // ================= ENERGY MONITORING =================
+
+        // ================= CURRENT USAGE BAR =================
+
+        updateBar(
+            'usageBar',
+            data.usage_percent
+        );
+
+        const usageBar =
+            document.getElementById('usageBar');
+
+        if(usageBar){
+
+            // REMOVE OLD COLORS
+
+            usageBar.classList.remove(
+                'bg-success',
+                'bg-warning',
+                'bg-danger',
+                'bg-primary'
+            );
+
+            // LOW USAGE
+
+            if(data.usage_percent < 30){
+
+                usageBar.classList.add(
+                    'bg-success'
+                );
+
+            }
+
+            // MEDIUM USAGE
+
+            else if(data.usage_percent < 75){
+
+                usageBar.classList.add(
+                    'bg-warning'
+                );
+
+            }
+
+            // HIGH USAGE
+
+            else{
+
+                usageBar.classList.add(
+                    'bg-danger'
+                );
+
+            }
+
+        }
+
+        updateBar(
+            'efficiencyBar',
+            data.efficiency
+        );
+
+        updateBar(
+            'optimizationBar',
+            data.optimization
+        );
+
+        // ================= DEVICE STATUS =================
+
+        updateElement(
+
+            'lamp1Status',
+
+            data.devices.lamp1 == 1
+            ? "🟢 ON"
+            : "🔴 OFF"
+
+        );
+
+        updateElement(
+
+            'lamp2Status',
+
+            data.devices.lamp2 == 1
+            ? "🟢 ON"
+            : "🔴 OFF"
+
+        );
+
+        updateElement(
+
+            'fanStatus',
+
+            data.devices.fan == 1
+            ? "🟢 ON"
+            : "🔴 OFF"
+
+        );
+
+        updateElement(
+
+            'acStatus',
+
+            data.devices.ac == 1
+            ? "🟢 ON"
+            : "🔴 OFF"
+
+        );
+
+        updateElement(
+
+            'tvStatus',
+
+            data.devices.tv == 1
+            ? "🟢 ON"
+            : "🔴 OFF"
+
+        );
+
+        updateElement(
+
+            'securityStatus',
+
+            data.devices.security == 1
+            ? "🟢 ACTIVE"
+            : "🔴 DISABLED"
+
+        );
+
+        // ================= AI AUTOMATION =================
+
+        const aiTitle =
+            document.getElementById('aiTitle');
+
+        const aiMessage =
+            document.getElementById('aiMessage');
+
+        if(aiTitle && aiMessage){
+
+            let title =
+                "🟢 Smart AI Optimization Active";
+
+            let message =
+                "AI monitoring all appliances in realtime.";
+
+            // Critical Load
+
+            if(data.power > 1500){
+
+                title =
+                    "🔴 Critical Power Consumption";
+
+                message =
+                    "High electricity usage detected. "
+                    + "AI recommends reducing heavy appliance usage.";
+
+            }
+
+            // Moderate Load
+
+            else if(data.power > 700){
+
+                title =
+                    "🟡 Moderate Energy Usage";
+
+                message =
+                    "AI balancing appliance efficiency "
+                    + "for optimized performance.";
+
+            }
+
+            // Low Load
+
+            else{
+
+                title =
+                    "🟢 Energy Efficient System";
+
+                message =
+                    "System operating efficiently "
+                    + "under optimized load conditions.";
+
+            }
+
+            // AC Analysis
+
+            if(data.devices.ac == 1){
+
+                message +=
+                    "<br><br>❄️ AC consuming high power.";
+
+            }
+
+            // Entertainment Detection
+
+            if(
+                data.devices.tv == 1 &&
+                data.devices.ac == 1
+            ){
+
+                message +=
+                    "<br><br>🎬 Entertainment mode detected.";
+
+            }
+
+            // Security Detection
+
+            if(data.devices.security == 1){
+
+                message +=
+                    "<br><br>🛡️ Security system active.";
+
+            }
+
+            // Night Mode Detection
+
+            if(
+                data.devices.lamp2 == 1 &&
+                data.devices.tv == 0
+            ){
+
+                message +=
+                    "<br><br>🌙 Night optimization active.";
+
+            }
+
+            aiTitle.innerHTML = title;
+
+            aiMessage.innerHTML = message;
+
+        }
+
+    }
+
+    catch(error){
+
+        console.log(
+            "Realtime Control Error:",
+            error
+        );
+
+    }
+
+    finally{
+
+        refreshRunning = false;
+
+    }
+
+}
+
+// ================= INITIAL LOAD =================
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    function(){
+
+        refreshControlPanel();
+
+        setInterval(
+
+            refreshControlPanel,
+
+            3000
+
+        );
+
+    }
+
+);
+
+</script>
+
 {% endblock %}

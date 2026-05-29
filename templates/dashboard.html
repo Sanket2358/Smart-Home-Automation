@@ -1,95 +1,813 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<!-- Begin Page Content -->
 <meta http-equiv="refresh" content="5">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+    body{
+        background:#f4f7fc;
+    }
+
+    .dashboard-title{
+        font-size:34px;
+        font-weight:700;
+        color:#224abe;
+    }
+
+    .dashboard-subtitle{
+        color:#777;
+        margin-bottom:25px;
+    }
+
+    /* ================= TOP CARDS ================= */
+
+    .dashboard-card{
+        position:relative;
+        overflow:hidden;
+        border:none;
+        border-radius:22px;
+        padding:22px;
+        color:white;
+        transition:0.4s;
+        box-shadow:0 12px 28px rgba(0,0,0,0.12);
+        height:100%;
+    }
+
+    .dashboard-card:hover{
+        transform:translateY(-6px);
+    }
+
+    .dashboard-card::before{
+        content:'';
+        position:absolute;
+        width:180px;
+        height:180px;
+        background:rgba(255,255,255,0.08);
+        border-radius:50%;
+        top:-70px;
+        right:-70px;
+    }
+
+    .primary-card{
+        background:linear-gradient(135deg,#4e73df,#224abe);
+    }
+
+    .success-card{
+        background:linear-gradient(135deg,#1cc88a,#17a673);
+    }
+
+    .info-card{
+        background:linear-gradient(135deg,#36b9cc,#258391);
+    }
+
+    .warning-card{
+        background:linear-gradient(135deg,#f6c23e,#dda20a);
+    }
+
+    .danger-card{
+        background:linear-gradient(135deg,#e74a3b,#c0392b);
+    }
+
+    .purple-card{
+        background:linear-gradient(135deg,#8e44ad,#6c3483);
+    }
+
+    .card-label{
+        font-size:14px;
+        font-weight:700;
+        text-transform:uppercase;
+        letter-spacing:1px;
+    }
+
+    .card-value{
+        font-size:32px;
+        font-weight:700;
+        margin-top:10px;
+    }
+
+    .card-icon{
+        font-size:55px;
+        opacity:0.2;
+        position:absolute;
+        right:20px;
+        top:20px;
+    }
+
+    /* ================= ANALYTICS ================= */
+
+    .analytics-card{
+        background:white;
+        border-radius:22px;
+        overflow:hidden;
+        box-shadow:0 10px 25px rgba(0,0,0,0.08);
+        height:100%;
+    }
+
+    .analytics-header{
+        padding:18px 22px;
+        color:white;
+        font-weight:700;
+        font-size:18px;
+    }
+
+    .gradient-blue{
+        background:linear-gradient(90deg,#4e73df,#224abe);
+    }
+
+    .gradient-green{
+        background:linear-gradient(90deg,#1cc88a,#17a673);
+    }
+
+    .gradient-cyan{
+        background:linear-gradient(90deg,#36b9cc,#258391);
+    }
+
+    /* ================= BILL SECTION ================= */
+
+    .bill-card{
+        background:linear-gradient(135deg,#4e73df,#224abe);
+        border-radius:28px;
+        padding:35px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        overflow:hidden;
+        position:relative;
+        color:white;
+        box-shadow:0 15px 35px rgba(0,0,0,0.15);
+    }
+
+    .bill-card::before{
+        content:'';
+        position:absolute;
+        width:350px;
+        height:350px;
+        background:rgba(255,255,255,0.08);
+        border-radius:50%;
+        top:-120px;
+        right:-120px;
+    }
+
+    .bill-left{
+        position:relative;
+        z-index:2;
+    }
+
+    .bill-badge{
+        display:inline-block;
+        padding:10px 18px;
+        background:rgba(255,255,255,0.15);
+        border-radius:30px;
+        font-size:14px;
+        font-weight:700;
+        margin-bottom:20px;
+    }
+
+    .bill-title{
+        font-size:34px;
+        font-weight:700;
+        margin-bottom:10px;
+    }
+
+    .bill-price{
+        font-size:58px;
+        font-weight:800;
+        margin-bottom:10px;
+    }
+
+    .bill-subtext{
+        opacity:0.85;
+        margin-bottom:30px;
+    }
+
+    .bill-stats{
+        display:flex;
+        gap:18px;
+        flex-wrap:wrap;
+    }
+
+    .bill-stat-box{
+        background:rgba(255,255,255,0.12);
+        padding:18px 22px;
+        border-radius:18px;
+        min-width:170px;
+    }
+
+    .bill-stat-box h5{
+        font-size:14px;
+        margin-bottom:10px;
+        opacity:0.8;
+    }
+
+    .bill-stat-box p{
+        font-size:22px;
+        font-weight:700;
+        margin:0;
+    }
+
+    .bill-circle{
+        width:220px;
+        height:220px;
+        border-radius:50%;
+        background:rgba(255,255,255,0.12);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .bill-circle-inner{
+        width:150px;
+        height:150px;
+        border-radius:50%;
+        background:white;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        color:#224abe;
+        font-size:24px;
+        font-weight:800;
+        text-align:center;
+    }
+
+    /* ================= DEVICE STATUS ================= */
+
+    .status-box{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:15px 0;
+        border-bottom:1px solid #eee;
+    }
+
+    .status-dot{
+        width:12px;
+        height:12px;
+        border-radius:50%;
+        background:#1cc88a;
+        box-shadow:0 0 10px #1cc88a;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media(max-width:992px){
+
+        .bill-card{
+            flex-direction:column;
+            text-align:center;
+            gap:30px;
+        }
+
+    }
+
+    @media(max-width:768px){
+
+        .dashboard-title{
+            font-size:26px;
+        }
+
+        .card-value{
+            font-size:26px;
+        }
+
+        .bill-title{
+            font-size:28px;
+        }
+
+        .bill-price{
+            font-size:44px;
+        }
+
+        .bill-circle{
+            width:180px;
+            height:180px;
+        }
+
+        .bill-circle-inner{
+            width:120px;
+            height:120px;
+            font-size:20px;
+        }
+
+    }
+
+</style>
+
 <div class="container-fluid">
 
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-            <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
-        </a>
+    <!-- HEADER -->
+    <div class="mb-4">
+
+        <h1 class="dashboard-title">
+            Smart Home Dashboard
+        </h1>
+
+        <p class="dashboard-subtitle">
+            Real-Time AI Powered Smart Home Monitoring System
+        </p>
+
     </div>
 
-    <!-- Content Row -->
+    <!-- TOP CARDS -->
     <div class="row">
 
-        <!-- Voltage Card -->
+        <!-- Voltage -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Voltage</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{slot1}}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-bolt fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+
+            <div class="dashboard-card primary-card">
+
+                <div class="card-label">
+                    Voltage
                 </div>
+
+                <div class="card-value">
+                    {{ slot1 }} V
+                </div>
+
+                <i class="fas fa-bolt card-icon"></i>
+
             </div>
+
         </div>
 
-        <!-- Current Card -->
+        <!-- Current -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Current</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{slot2}}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-plug fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+
+            <div class="dashboard-card success-card">
+
+                <div class="card-label">
+                    Current
                 </div>
+
+                <div class="card-value">
+                    {{ slot2 }} A
+                </div>
+
+                <i class="fas fa-plug card-icon"></i>
+
             </div>
+
         </div>
 
-        <!-- Power Card -->
+        <!-- Power -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Power</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{slot3}}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-tachometer-alt fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+
+            <div class="dashboard-card info-card">
+
+                <div class="card-label">
+                    Power
                 </div>
+
+                <div class="card-value">
+                    {{ slot3 }} W
+                </div>
+
+                <i class="fas fa-tachometer-alt card-icon"></i>
+
             </div>
+
         </div>
 
-        <!-- Load Prediction Card -->
+        <!-- Load -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Load Prediction</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{slot4}}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-chart-line fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+
+            <div class="dashboard-card warning-card">
+
+                <div class="card-label">
+                    Load Status
                 </div>
+
+                <div class="card-value">
+                    {{ slot4 }}
+                </div>
+
+                <i class="fas fa-chart-line card-icon"></i>
+
             </div>
+
+        </div>
+
+    </div>
+
+    <!-- CHARTS -->
+    <div class="row">
+    
+
+        <!-- POWER CHART -->
+        <div class="col-xl-8 col-lg-7 mb-4">
+
+            <div class="analytics-card">
+
+                <div class="analytics-header gradient-blue">
+                    ⚡ Real-Time Power Consumption
+                </div>
+
+                <div class="p-4">
+
+                    <canvas id="powerChart" height="120"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DEVICE CHART -->
+        <div class="col-xl-4 col-lg-5 mb-4">
+
+            <div class="analytics-card">
+
+                <div class="analytics-header gradient-green">
+                    📱 Device Usage
+                </div>
+
+                <div class="p-4">
+
+                    <canvas id="deviceChart" height="250"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ELECTRICITY BILL -->
+    <div class="row">
+
+        <div class="col-12 mb-4">
+
+            <div class="bill-card">
+
+                <div class="bill-left">
+
+                    <div class="bill-badge">
+                        ⚡ AI Electricity Prediction
+                    </div>
+
+                    <h2 class="bill-title">
+                        Estimated Monthly Bill
+                    </h2>
+
+                    <div class="bill-price">
+                        ₹ {{ ((slot3 / 1000) * 8 * 30 * 8)|round(2) }}
+                    </div>
+
+                    <div class="bill-subtext">
+                        Real-time calculation based on active devices
+                    </div>
+
+                    <div class="bill-stats">
+
+                        <div class="bill-stat-box">
+
+                            <h5>Daily Usage</h5>
+
+                            <p>
+                                {{ ((slot3 / 1000) * 8)|round(2) }} kWh
+                            </p>
+
+                        </div>
+
+                        <div class="bill-stat-box">
+
+                            <h5>Cost Per Day</h5>
+
+                            <p>
+                                ₹ {{ ((slot3 / 1000) * 8 * 8)|round(2) }}
+                            </p>
+
+                        </div>
+
+                        <div class="bill-stat-box">
+
+                            <h5>Efficiency</h5>
+
+                            <p>88%</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="bill-circle">
+
+                    <div class="bill-circle-inner">
+                        Smart AI
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BOTTOM STATUS -->
+    <div class="row">
+
+        <!-- Security -->
+        <div class="col-xl-4 col-md-6 mb-4">
+
+            <div class="dashboard-card danger-card">
+
+                <div class="card-label">
+                    Security Status
+                </div>
+
+                <div class="card-value">
+                    SAFE
+                </div>
+
+                <i class="fas fa-shield-alt card-icon"></i>
+
+            </div>
+
+        </div>
+
+        <!-- Devices -->
+        <div class="col-xl-4 col-md-6 mb-4">
+
+            <div class="dashboard-card purple-card">
+
+                <div class="card-label">
+                    Active Devices
+                </div>
+
+                <div class="card-value">
+
+                    {{
+                        devices['lamp1'] +
+                        devices['lamp2'] +
+                        devices['fan'] +
+                        devices['ac'] +
+                        devices['tv'] +
+                        devices['security']
+                    }}
+
+                </div>
+
+                <i class="fas fa-microchip card-icon"></i>
+
+            </div>
+
+        </div>
+
+        <!-- Internet -->
+        <div class="col-xl-4 col-md-6 mb-4">
+
+            <div class="dashboard-card success-card">
+
+                <div class="card-label">
+                    Internet Status
+                </div>
+
+                <div class="card-value">
+                    Connected
+                </div>
+
+                <i class="fas fa-wifi card-icon"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- DEVICE STATUS -->
+    <div class="analytics-card mb-4">
+
+        <div class="analytics-header gradient-blue">
+            🏠 Live Device Status
+        </div>
+
+        <div class="p-4">
+
+            <!-- Lamp 1 -->
+            <div class="status-box">
+
+                <span>Lamp 1</span>
+
+                {% if devices['lamp1'] == 1 %}
+
+                    <span class="text-success font-weight-bold">
+                        ON
+                    </span>
+
+                {% else %}
+
+                    <span class="text-danger font-weight-bold">
+                        OFF
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+            <!-- Lamp 2 -->
+            <div class="status-box">
+
+                <span>Lamp 2</span>
+
+                {% if devices['lamp2'] == 1 %}
+
+                    <span class="text-success font-weight-bold">
+                        ON
+                    </span>
+
+                {% else %}
+
+                    <span class="text-danger font-weight-bold">
+                        OFF
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+            <!-- Fan -->
+            <div class="status-box">
+
+                <span>Smart Fan</span>
+
+                {% if devices['fan'] == 1 %}
+
+                    <span class="text-success font-weight-bold">
+                        ON
+                    </span>
+
+                {% else %}
+
+                    <span class="text-danger font-weight-bold">
+                        OFF
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+            <!-- AC -->
+            <div class="status-box">
+
+                <span>Air Conditioner</span>
+
+                {% if devices['ac'] == 1 %}
+
+                    <span class="text-success font-weight-bold">
+                        ON
+                    </span>
+
+                {% else %}
+
+                    <span class="text-danger font-weight-bold">
+                        OFF
+                    </span>
+
+                {% endif %}
+
+            </div>
+            <!-- SMART TV -->
+            <div class="status-box">
+
+                <span>Smart TV</span>
+
+                {% if devices['tv'] == 1 %}
+
+                    <span class="text-success font-weight-bold">
+                        ON
+                    </span>
+
+                {% else %}
+
+                    <span class="text-danger font-weight-bold">
+                        OFF
+                    </span>
+
+                {% endif %}
+
+            </div>
+            <!-- SECURITY SYSTEM -->
+            <div class="status-box">
+
+                <span>Security System</span>
+
+                {% if devices['security'] == 1 %}
+
+                    <span class="text-success font-weight-bold">
+                        ACTIVE
+                    </span>
+
+                {% else %}
+
+                    <span class="text-danger font-weight-bold">
+                        DISABLED
+                    </span>
+
+                {% endif %}
+
+            </div>
+
         </div>
 
     </div>
 
 </div>
+
+<!-- REAL-TIME CHARTS -->
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    // POWER CHART
+    new Chart(document.getElementById("powerChart"), {
+
+        type:'line',
+
+        data:{
+
+            labels:[
+                "1 PM",
+                "2 PM",
+                "3 PM",
+                "4 PM",
+                "5 PM",
+                "Now"
+            ],
+
+            datasets:[{
+
+                label:"Power Usage",
+
+                data:[
+                    220,
+                    450,
+                    600,
+                    500,
+                    850,
+                    {{ slot3 }}
+                ],
+
+                borderWidth:4,
+                tension:0.4,
+                fill:true
+
+            }]
+
+        },
+
+        options:{
+            responsive:true,
+            maintainAspectRatio:false
+        }
+
+    });
+
+    // DEVICE CHART
+    new Chart(document.getElementById("deviceChart"), {
+
+        type:'doughnut',
+
+        data:{
+
+            labels:[
+                "Lights",
+                "Fan",
+                "AC",
+                "TV",
+                "Security"
+            ],
+
+            datasets:[{
+
+                data:[
+
+                    {{ devices['lamp1'] + devices['lamp2'] }},
+                    {{ devices['fan'] }},
+                    {{ devices['ac'] }},
+                    {{ devices['tv'] }},
+                    {{ devices['security'] }}
+
+                ]
+
+            }]
+
+        },
+
+        options:{
+            responsive:true,
+            maintainAspectRatio:false
+        }
+
+    });
+
+});
+
+</script>
 
 {% endblock %}

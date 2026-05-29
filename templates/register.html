@@ -3,113 +3,434 @@
 
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Register</title>
+    <title>Create Account</title>
 
-    <!-- Custom fonts for this template-->
-    <link href="static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="{{ url_for('static', filename='vendor/fontawesome-free/css/all.min.css') }}"
+          rel="stylesheet">
 
-    <!-- Custom styles for this template-->
-    <link href="static/css/sb-admin-2.min.css" rel="stylesheet">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(-45deg,#4e73df,#224abe,#36b9cc,#1cc88a);
+            background-size:400% 400%;
+            animation:gradientBG 12s ease infinite;
+            padding:20px;
+        }
+
+        @keyframes gradientBG{
+
+            0%{
+                background-position:0% 50%;
+            }
+
+            50%{
+                background-position:100% 50%;
+            }
+
+            100%{
+                background-position:0% 50%;
+            }
+
+        }
+
+        .register-container{
+
+            width:100%;
+            max-width:1100px;
+            display:flex;
+            overflow:hidden;
+            border-radius:25px;
+            background:rgba(255,255,255,0.1);
+            backdrop-filter:blur(12px);
+            box-shadow:0 8px 32px rgba(0,0,0,0.3);
+
+        }
+
+        .left-side{
+
+            flex:1;
+            padding:60px;
+            color:white;
+            background:rgba(255,255,255,0.08);
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+
+        }
+
+        .left-side i{
+
+            font-size:90px;
+            margin-bottom:25px;
+
+        }
+
+        .left-side h1{
+
+            font-size:42px;
+            margin-bottom:20px;
+            font-weight:700;
+
+        }
+
+        .left-side p{
+
+            font-size:16px;
+            line-height:1.8;
+            opacity:0.9;
+
+        }
+
+        .right-side{
+
+            flex:1;
+            background:white;
+            padding:50px 40px;
+
+        }
+
+        .title{
+
+            text-align:center;
+            margin-bottom:30px;
+
+        }
+
+        .title h2{
+
+            font-size:32px;
+            color:#224abe;
+            margin-bottom:10px;
+
+        }
+
+        .title p{
+
+            color:#777;
+            font-size:14px;
+
+        }
+
+        .row{
+
+            display:flex;
+            gap:15px;
+
+        }
+
+        .form-group{
+
+            margin-bottom:20px;
+            position:relative;
+            width:100%;
+
+        }
+
+        .form-group input{
+
+            width:100%;
+            padding:15px 20px;
+            border:none;
+            border-radius:12px;
+            background:#f3f5f9;
+            outline:none;
+            transition:0.3s;
+            font-size:15px;
+
+        }
+
+        .form-group input:focus{
+
+            background:white;
+            border:2px solid #4e73df;
+            box-shadow:0 0 12px rgba(78,115,223,0.2);
+
+        }
+
+        .form-group i{
+
+            position:absolute;
+            top:18px;
+            right:18px;
+            color:#999;
+
+        }
+
+        .register-btn{
+
+            width:100%;
+            padding:15px;
+            border:none;
+            border-radius:12px;
+            background:linear-gradient(90deg,#4e73df,#224abe);
+            color:white;
+            font-size:16px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+
+        }
+
+        .register-btn:hover{
+
+            transform:translateY(-2px);
+            box-shadow:0 10px 20px rgba(34,74,190,0.3);
+
+        }
+
+        .error-box{
+
+            margin-top:15px;
+            text-align:center;
+            color:red;
+            font-size:14px;
+
+        }
+
+        .bottom-links{
+
+            margin-top:25px;
+            text-align:center;
+
+        }
+
+        .bottom-links a{
+
+            text-decoration:none;
+            color:#4e73df;
+            transition:0.3s;
+
+        }
+
+        .bottom-links a:hover{
+
+            color:#224abe;
+
+        }
+
+        @media(max-width:768px){
+
+            .register-container{
+
+                flex-direction:column;
+
+            }
+
+            .left-side{
+
+                text-align:center;
+                padding:40px 25px;
+
+            }
+
+            .left-side h1{
+
+                font-size:30px;
+
+            }
+
+            .left-side i{
+
+                font-size:70px;
+
+            }
+
+            .right-side{
+
+                padding:40px 25px;
+
+            }
+
+            .row{
+
+                flex-direction:column;
+                gap:0;
+
+            }
+
+        }
+
+    </style>
 
 </head>
 
-<body class="bg-gradient-primary">
+<body>
 
-    <div class="container">
+<div class="register-container">
 
-        <div class="card o-hidden border-0 shadow-lg my-5">
-            <div class="card-body p-0">
-                <!-- Nested Row within Card Body -->
-                <div class="row">
-                    <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
-                    <div class="col-lg-7">
-                        <div class="p-5">
-                            <div class="text-center">
-                                <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
-                            </div>
-                            <form class="user" action="" method="post" enctype="multipart/form-data">
-                                <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="text" class="form-control form-control-user" id="exampleFirstName"
-                                            placeholder="First Name"
-                                            name="name" value="{{ name }}" required>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <input type="text" class="form-control form-control-user" id="exampleLastName"
-                                            placeholder="Last Name"
-                                            name="lname" value="{{ lname }}" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="email" class="form-control form-control-user" id="exampleInputEmail"
-                                        placeholder="Email Address"
-                                        name="email" value="{{ email }}" required>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="password" class="form-control form-control-user"
-                                            id="exampleInputPassword" placeholder="Password"
-                                            name="password" value="{{ password }}" required>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <input type="password" class="form-control form-control-user"
-                                            id="exampleRepeatPassword" placeholder="Repeat Password"
-                                            name="rpassword" value="{{ rpassword }}" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control form-control-user" id="exampleInputEmail"
-                                        placeholder="What is the name of your pet?"
-                                        name="pet" value="{{ pet }}" required>
-                                </div>
-                                <button name="sub" value="Submit" class="btn btn-primary btn-user btn-block">
-                                    Register Account
-                                </button>
-                                <hr>
-                                <!--a href="index.html" class="btn btn-google btn-user btn-block">
-                                    <i class="fab fa-google fa-fw"></i> Register with Google
-                                </a>
-                                <a href="index.html" class="btn btn-facebook btn-user btn-block">
-                                    <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
-                                </a-->
-                                <div class="text-center text-danger">
-                                {{ error }}
-                                </div>
-                            </form>
-                            <hr>
-                            <div class="text-center">
-                                <a class="small" href="forgot">Forgot Password?</a>
-                            </div>
-                            <div class="text-center">
-                                <a class="small" href="login">Already have an account? Login!</a>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Left Side -->
+    <div class="left-side">
+
+        <i class="fas fa-user-shield"></i>
+
+        <h1>Create Your Account</h1>
+
+        <p>
+            Join the Smart Home Automation platform and control your devices,
+            monitor energy usage, and experience intelligent automation securely.
+        </p>
+
+    </div>
+
+    <!-- Right Side -->
+    <div class="right-side">
+
+        <div class="title">
+
+            <h2>Register Now</h2>
+
+            <p>Create your smart home account</p>
+
+        </div>
+
+        <form method="POST">
+
+            <!-- Name Row -->
+            <div class="row">
+
+                <div class="form-group">
+
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="First Name"
+                        required>
+
+                    <i class="fas fa-user"></i>
+
                 </div>
+
+                <div class="form-group">
+
+                    <input
+                        type="text"
+                        name="lname"
+                        placeholder="Last Name"
+                        required>
+
+                    <i class="fas fa-user"></i>
+
+                </div>
+
             </div>
+
+            <!-- Email -->
+            <div class="form-group">
+
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email Address"
+                    required>
+
+                <i class="fas fa-envelope"></i>
+
+            </div>
+
+            <!-- Password Row -->
+            <div class="row">
+
+                <div class="form-group">
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        required>
+
+                    <i class="fas fa-lock"></i>
+
+                </div>
+
+                <div class="form-group">
+
+                    <input
+                        type="password"
+                        name="rpassword"
+                        placeholder="Repeat Password"
+                        required>
+
+                    <i class="fas fa-lock"></i>
+
+                </div>
+
+            </div>
+
+            <!-- Security Question -->
+            <div class="form-group">
+
+                <input
+                    type="text"
+                    name="pet"
+                    placeholder="What is the name of your pet?"
+                    required>
+
+                <i class="fas fa-paw"></i>
+
+            </div>
+
+            <!-- Button -->
+            <button
+                type="submit"
+                name="sub"
+                value="Submit"
+                class="register-btn">
+
+                Register Account
+
+            </button>
+
+            <!-- Error -->
+            <div class="error-box">
+
+                {{ error }}
+
+            </div>
+
+        </form>
+
+        <!-- Links -->
+        <div class="bottom-links">
+
+            <p>
+                <a href="/forgot">
+                    Forgot Password?
+                </a>
+            </p>
+
+            <br>
+
+            <p>
+                Already have an account?
+                <a href="/login">
+                    Login
+                </a>
+            </p>
+
         </div>
 
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="static/vendor/jquery/jquery.min.js"></script>
-    <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="static/js/sb-admin-2.min.js"></script>
+</div>
 
 </body>
-
 </html>

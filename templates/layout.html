@@ -3,230 +3,388 @@
 
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Home Automation Dashboard">
-    <meta name="author" content="">
+    <meta charset="UTF-8">
 
-    <title>Home Automation Dashboard</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-    <!-- Custom fonts for this template-->
-    <link href="static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    <title>Smart Home Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link href="{{ url_for('static', filename='vendor/fontawesome-free/css/all.min.css') }}"
         rel="stylesheet">
 
-    <!-- Custom styles for this template-->
-    <link href="static/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/sb-admin-2.min.css') }}"
+        rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900"
+        rel="stylesheet">
+
     <style>
-        .sidebar .nav-item .nav-link span {
-            font-weight: bold;
+
+        body{
+
+            background:#f4f7fc;
+            font-family:'Nunito',sans-serif;
+
         }
 
-        .navbar {
-            background: linear-gradient(90deg, #4e73df, #224abe);
-            color: white;
+        /* SIDEBAR */
+
+        .sidebar{
+
+            background:linear-gradient(180deg,#4e73df,#224abe);
+            min-height:100vh;
+
         }
 
-        .navbar h1 {
-            color: white;
+        .sidebar-brand{
+
+            height:80px;
+            font-size:22px;
+            font-weight:700;
+
         }
 
-        .footer {
-            background-color: #f8f9fc;
-            padding: 10px 0;
+        .nav-item{
+
+            margin:10px 15px;
+
         }
 
-        .sidebar-brand-text {
-            font-size: 1.2rem;
+        .nav-link{
+
+            border-radius:14px;
+            padding:14px 18px !important;
+            transition:0.3s;
+            font-weight:600;
+
         }
 
-        .nav-link:hover {
-            background-color: #224abe;
-            border-radius: 5px;
+        .nav-link:hover{
+
+            background:rgba(255,255,255,0.12);
+            transform:translateX(4px);
+
         }
 
-        .img-profile {
-            width: 36px;
-            height: 36px;
+        .nav-link i{
+
+            margin-right:10px;
+
         }
+
+        /* TOPBAR */
+
+        .topbar{
+
+            background:white;
+            border-radius:18px;
+            margin:20px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.08);
+
+        }
+
+        /* USER PROFILE */
+
+        .user-profile{
+
+            display:flex;
+            align-items:center;
+            gap:12px;
+            padding:8px 15px;
+            border-radius:14px;
+            transition:0.3s;
+
+        }
+
+        .user-profile:hover{
+
+            background:#f4f7fc;
+
+        }
+
+        .profile-img{
+
+            width:45px;
+            height:45px;
+            border-radius:50%;
+            border:3px solid #4e73df;
+
+        }
+
+        .user-name{
+
+            font-weight:700;
+            color:#333;
+
+        }
+
+        .user-role{
+
+            font-size:12px;
+            color:#777;
+
+        }
+
+        /* DROPDOWN */
+
+        .dropdown-menu{
+
+            border:none;
+            border-radius:18px;
+            overflow:hidden;
+            box-shadow:0 12px 30px rgba(0,0,0,0.12);
+
+        }
+
+        .dropdown-item{
+
+            padding:14px 20px;
+            font-weight:600;
+            transition:0.3s;
+
+        }
+
+        .dropdown-item:hover{
+
+            background:#f4f7fc;
+            transform:translateX(3px);
+
+        }
+
+        /* MOBILE */
+
+        @media(max-width:768px){
+
+            .topbar{
+
+                margin:10px;
+
+            }
+
+            .user-role{
+
+                display:none;
+
+            }
+
+        }
+
     </style>
 
 </head>
 
-<body id="page-top" data-load="1755236063">
+<body id="page-top">
 
-    <!-- Page Wrapper -->
-    <div id="wrapper">
+<div id="wrapper">
 
-        <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <!-- Sidebar -->
+    <ul class="navbar-nav sidebar sidebar-dark accordion">
 
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-home"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">Smart Home</div>
+        <!-- Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center"
+            href="/dashboard">
+
+            <div class="sidebar-brand-icon">
+
+                <i class="fas fa-home"></i>
+
+            </div>
+
+            <div class="sidebar-brand-text mx-2">
+
+                Smart Home
+
+            </div>
+
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Dashboard -->
+        <li class="nav-item">
+
+            <a class="nav-link"
+                href="/dashboard">
+
+                <i class="fas fa-chart-line"></i>
+
+                Dashboard
+
             </a>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
+        </li>
 
-            <!-- Nav Item - Home Control -->
-            <li class="nav-item">
-                <a class="nav-link" href="controlHome">
-                    <i class="fas fa-sliders-h"></i>
-                    <span>Home Control</span>
-                </a>
-            </li>
+        <!-- Control -->
+        <li class="nav-item">
 
-            <!-- Nav Item - Home Monitoring -->
-            <li class="nav-item">
-                <a class="nav-link" href="dashboard">
-                    <i class="fas fa-video"></i>
-                    <span>Home Monitoring</span>
-                </a>
-            </li>
+            <a class="nav-link"
+                href="/controlHome">
 
-            <!-- Nav Item - Logout -->
-            <li class="nav-item">
-                <a class="nav-link" href="login">
-                    <i class="fas fa-power-off"></i>
-                    <span>Logout</span>
-                </a>
-            </li>
+                <i class="fas fa-sliders-h"></i>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider">
+                Device Control
 
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
+            </a>
 
-        </ul>
-        <!-- End of Sidebar -->
+        </li>
 
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+        <!-- History -->
+        <li class="nav-item">
 
-            <!-- Main Content -->
-            <div id="content">
+            <a class="nav-link"
+                href="/history">
 
-                <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow">
+                <i class="fas fa-history"></i>
 
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
+                History
 
-                    <!-- Topbar Title -->
-                    <h1 class="h3 mb-0">Home Automation Dashboard</h1>
+            </a>
 
-                    <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
+        </li>
 
-                        <!-- User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ name }}</span>
-                                <img class="img-profile rounded-circle" src="static/img/undraw_profile.svg">
-                            </a>
-                            <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="register">
-                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Register
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="login" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
-                                </a>
+        <!-- Logout -->
+        <li class="nav-item">
+
+            <a class="nav-link"
+                href="/login">
+
+                <i class="fas fa-sign-out-alt"></i>
+
+                Logout
+
+            </a>
+
+        </li>
+
+    </ul>
+
+    <!-- Content -->
+    <div id="content-wrapper"
+        class="d-flex flex-column">
+
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand topbar static-top">
+
+                <button id="sidebarToggleTop"
+                    class="btn btn-link d-md-none rounded-circle mr-3">
+
+                    <i class="fa fa-bars"></i>
+
+                </button>
+
+                <ul class="navbar-nav ml-auto">
+
+                    <!-- User -->
+                    <li class="nav-item dropdown no-arrow">
+
+                        <a class="nav-link dropdown-toggle"
+                            href="#"
+                            id="userDropdown"
+                            role="button"
+                            data-toggle="dropdown">
+
+                            <div class="user-profile">
+
+                                <img class="profile-img"
+                                    src="{{ url_for('static', filename='img/undraw_profile.svg') }}">
+
+                                <div>
+
+                                    <div class="user-name">
+
+                                        {{ name }}
+
+                                    </div>
+
+                                    <div class="user-role">
+
+                                        Administrator
+
+                                    </div>
+
+                                </div>
+
                             </div>
-                        </li>
 
-                    </ul>
+                        </a>
 
-                </nav>
-                <!-- End of Topbar -->
+                        <!-- Dropdown -->
+                        <div class="dropdown-menu dropdown-menu-right animated--grow-in">
 
-                <!-- Begin Page Content -->
-                <div class="container-fluid">
+                            <a class="dropdown-item"
+                                href="/dashboard">
 
-                    <!-- Page Heading -->
-                    {% block content %}
-                    {% endblock %}
+                                <i class="fas fa-chart-line mr-2 text-primary"></i>
 
-                </div>
-                <!-- /.container-fluid -->
+                                Dashboard
+
+                            </a>
+
+                            <a class="dropdown-item"
+                                href="/controlHome">
+
+                                <i class="fas fa-sliders-h mr-2 text-success"></i>
+
+                                Device Control
+
+                            </a>
+
+                            <a class="dropdown-item"
+                                href="/register">
+
+                                <i class="fas fa-user-plus mr-2 text-info"></i>
+
+                                Create Account
+
+                            </a>
+
+                            <div class="dropdown-divider"></div>
+
+                            <a class="dropdown-item"
+                                href="/login">
+
+                                <i class="fas fa-sign-out-alt mr-2 text-danger"></i>
+
+                                Logout
+
+                            </a>
+
+                        </div>
+
+                    </li>
+
+                </ul>
+
+            </nav>
+
+            <!-- Main -->
+            <div class="container-fluid">
+
+                {% block content %}
+                {% endblock %}
 
             </div>
-            <!-- End of Main Content -->
-
-            <!-- Footer -->
-            <footer class="footer sticky-footer">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Home Automation Using AI and AR 2025</span>
-                    </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
 
         </div>
-        <!-- End of Content Wrapper -->
 
     </div>
-    <!-- End of Page Wrapper -->
 
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
+</div>
 
-    <!-- Logout Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login">Logout</a>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- JS -->
+<script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="static/vendor/jquery/jquery.min.js"></script>
-    <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-    <!-- Core plugin JavaScript -->
-    <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
-    <!-- Custom scripts for all pages -->
-    <script src="static/js/sb-admin-2.min.js"></script>
+<script src="{{ url_for('static', filename='js/sb-admin-2.min.js') }}"></script>
 
 </body>
-<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
-<script src="static/js/ml.js"></script>
-<script type="text/javascript">
-    $(document).ready(function() {
-
-        $().jqLoad();
-    });
-</script>
 </html>

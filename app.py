@@ -2,7 +2,6 @@
 from flask import Flask, render_template, redirect, url_for, request,session,Response,jsonify
 from werkzeug.utils import secure_filename
 import os
-import cv2
 import pandas as pd
 import sqlite3
 from datetime import datetime

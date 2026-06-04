@@ -747,11 +747,13 @@
 
         .catch(error => {
 
-            console.error('Error:', error);
+    console.error("FULL ERROR:", error);
 
-            showToast("Connection Error");
+    showToast(
+        "Error: " + error.message
+    );
 
-        });
+});
 
     }
 

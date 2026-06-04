@@ -1,8 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<meta http-equiv="refresh" content="5">
-
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -293,6 +291,183 @@
         }
 
     }
+    /* ================= ANALYTICS REDIRECT ================= */
+
+.analytics-redirect-card{
+
+    background:linear-gradient(
+        135deg,
+        #4e73df,
+        #224abe
+    );
+
+    border-radius:28px;
+
+    padding:35px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    color:white;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,0.15);
+
+    animation:
+        analyticsFade 1s ease;
+
+}
+
+.analytics-redirect-card::before{
+
+    content:'';
+
+    position:absolute;
+
+    width:300px;
+    height:300px;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    border-radius:50%;
+
+    right:-100px;
+    top:-100px;
+
+}
+
+.analytics-content{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+.analytics-badge{
+
+    display:inline-block;
+
+    padding:10px 18px;
+
+    border-radius:30px;
+
+    background:
+        rgba(255,255,255,0.15);
+
+    font-size:14px;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+
+}
+
+.analytics-title{
+
+    font-size:34px;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+
+}
+
+.analytics-text{
+
+    opacity:0.9;
+
+    max-width:650px;
+
+    margin-bottom:25px;
+
+}
+
+.analytics-btn{
+
+    display:inline-block;
+
+    padding:14px 28px;
+
+    background:white;
+
+    color:#224abe;
+
+    border-radius:14px;
+
+    font-weight:700;
+
+    text-decoration:none;
+
+    transition:0.3s;
+
+}
+
+.analytics-btn:hover{
+
+    transform:translateY(-3px);
+
+    color:#224abe;
+
+    text-decoration:none;
+
+}
+
+.analytics-icon{
+
+    font-size:110px;
+
+    opacity:0.18;
+
+}
+
+@keyframes analyticsFade{
+
+    from{
+
+        opacity:0;
+        transform:translateY(30px);
+
+    }
+
+    to{
+
+        opacity:1;
+        transform:translateY(0);
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .analytics-content{
+
+        flex-direction:column;
+
+        text-align:center;
+
+    }
+
+    .analytics-title{
+
+        font-size:26px;
+
+    }
+
+    .analytics-icon{
+
+        font-size:80px;
+
+    }
+
+}
 
 </style>
 
@@ -323,7 +498,7 @@
                     Voltage
                 </div>
 
-                <div class="card-value">
+                <div class="card-value" id="voltageValue">
                     {{ slot1 }} V
                 </div>
 
@@ -342,7 +517,7 @@
                     Current
                 </div>
 
-                <div class="card-value">
+                <div class="card-value" id="currentValue">
                     {{ slot2 }} A
                 </div>
 
@@ -361,7 +536,7 @@
                     Power
                 </div>
 
-                <div class="card-value">
+                <div class="card-value" id="powerValue">
                     {{ slot3 }} W
                 </div>
 
@@ -380,7 +555,7 @@
                     Load Status
                 </div>
 
-                <div class="card-value">
+                <div class="card-value" id="loadValue">
                     {{ slot4 }}
                 </div>
 
@@ -453,7 +628,7 @@
                         Estimated Monthly Bill
                     </h2>
 
-                    <div class="bill-price">
+                    <div class="bill-price" id="monthlyBill">
                         ₹ {{ ((slot3 / 1000) * 8 * 30 * 8)|round(2) }}
                     </div>
 
@@ -467,7 +642,7 @@
 
                             <h5>Daily Usage</h5>
 
-                            <p>
+                            <p id="dailyUsage">
                                 {{ ((slot3 / 1000) * 8)|round(2) }} kWh
                             </p>
 
@@ -477,7 +652,7 @@
 
                             <h5>Cost Per Day</h5>
 
-                            <p>
+                            <p id="dailyCost">
                                 ₹ {{ ((slot3 / 1000) * 8 * 8)|round(2) }}
                             </p>
 
@@ -540,7 +715,7 @@
                     Active Devices
                 </div>
 
-                <div class="card-value">
+                <div class="card-value" id="activeDevices">
 
                     {{
                         devices['lamp1'] +
@@ -580,6 +755,60 @@
 
     </div>
 
+    <!-- ANALYTICS CENTER -->
+
+<div class="row">
+
+    <div class="col-12 mb-4">
+
+        <div class="analytics-redirect-card">
+
+            <div class="analytics-content">
+
+                <div>
+
+                    <span class="analytics-badge">
+                        📊 Live Analytics
+                    </span>
+
+                    <h2 class="analytics-title">
+
+                        Advanced Smart Home Analytics
+
+                    </h2>
+
+                    <p class="analytics-text">
+
+                        Explore real-time voltage, current, power consumption,
+                        device activity, and AI-powered energy insights with
+                        interactive charts.
+
+                    </p>
+
+                    <a href="{{ url_for('charts') }}"
+                       class="analytics-btn">
+
+                        Open Analytics Dashboard
+                        <i class="fas fa-arrow-right ml-2"></i>
+
+                    </a>
+
+                </div>
+
+                <div class="analytics-icon">
+
+                    <i class="fas fa-chart-line"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
     <!-- DEVICE STATUS -->
     <div class="analytics-card mb-4">
 
@@ -596,13 +825,13 @@
 
                 {% if devices['lamp1'] == 1 %}
 
-                    <span class="text-success font-weight-bold">
+                    <span id="lamp1Status" class="font-weight-bold">
                         ON
                     </span>
 
                 {% else %}
 
-                    <span class="text-danger font-weight-bold">
+                    <span id="lamp1Status" class="font-weight-bold">
                         OFF
                     </span>
 
@@ -617,13 +846,13 @@
 
                 {% if devices['lamp2'] == 1 %}
 
-                    <span class="text-success font-weight-bold">
+                    <span id="lamp2Status" class="font-weight-bold">
                         ON
                     </span>
 
                 {% else %}
 
-                    <span class="text-danger font-weight-bold">
+                    <span id="lamp2Status" class="font-weight-bold">
                         OFF
                     </span>
 
@@ -638,13 +867,13 @@
 
                 {% if devices['fan'] == 1 %}
 
-                    <span class="text-success font-weight-bold">
+                    <span id="fanStatus" class="font-weight-bold">
                         ON
                     </span>
 
                 {% else %}
 
-                    <span class="text-danger font-weight-bold">
+                    <span id="fanStatus" class="font-weight-bold">
                         OFF
                     </span>
 
@@ -659,13 +888,13 @@
 
                 {% if devices['ac'] == 1 %}
 
-                    <span class="text-success font-weight-bold">
+                    <span id="acStatus" class="font-weight-bold">
                         ON
                     </span>
 
                 {% else %}
 
-                    <span class="text-danger font-weight-bold">
+                    <span id="acStatus" class="font-weight-bold">
                         OFF
                     </span>
 
@@ -679,13 +908,13 @@
 
                 {% if devices['tv'] == 1 %}
 
-                    <span class="text-success font-weight-bold">
+                    <span id="tvStatus" class="font-weight-bold">
                         ON
                     </span>
 
                 {% else %}
 
-                    <span class="text-danger font-weight-bold">
+                    <span id="tvStatus" class="font-weight-bold">
                         OFF
                     </span>
 
@@ -699,13 +928,13 @@
 
                 {% if devices['security'] == 1 %}
 
-                    <span class="text-success font-weight-bold">
+                    <span id="securityStatus" class="font-weight-bold">
                         ACTIVE
                     </span>
 
                 {% else %}
 
-                    <span class="text-danger font-weight-bold">
+                    <span id="securityStatus" class="font-weight-bold">
                         DISABLED
                     </span>
 
@@ -722,59 +951,31 @@
 <!-- REAL-TIME CHARTS -->
 <script>
 
-document.addEventListener("DOMContentLoaded", function(){
+let powerHistory = [];
+let labels = [];
 
-    // POWER CHART
-    new Chart(document.getElementById("powerChart"), {
-
+const powerChart = new Chart(
+    document.getElementById("powerChart"),
+    {
         type:'line',
-
         data:{
-
-            labels:[
-                "1 PM",
-                "2 PM",
-                "3 PM",
-                "4 PM",
-                "5 PM",
-                "Now"
-            ],
-
+            labels:labels,
             datasets:[{
-
-                label:"Power Usage",
-
-                data:[
-                    220,
-                    450,
-                    600,
-                    500,
-                    850,
-                    {{ slot3 }}
-                ],
-
+                label:'Power Usage',
+                data:powerHistory,
                 borderWidth:4,
                 tension:0.4,
                 fill:true
-
             }]
-
-        },
-
-        options:{
-            responsive:true,
-            maintainAspectRatio:false
         }
+    }
+);
 
-    });
-
-    // DEVICE CHART
-    new Chart(document.getElementById("deviceChart"), {
-
+const deviceChart = new Chart(
+    document.getElementById("deviceChart"),
+    {
         type:'doughnut',
-
         data:{
-
             labels:[
                 "Lights",
                 "Fan",
@@ -782,31 +983,161 @@ document.addEventListener("DOMContentLoaded", function(){
                 "TV",
                 "Security"
             ],
-
             datasets:[{
-
-                data:[
-
-                    {{ devices['lamp1'] + devices['lamp2'] }},
-                    {{ devices['fan'] }},
-                    {{ devices['ac'] }},
-                    {{ devices['tv'] }},
-                    {{ devices['security'] }}
-
-                ]
-
+                data:[0,0,0,0,0]
             }]
+        }
+    }
+);
 
-        },
+async function refreshDashboard(){
 
-        options:{
-            responsive:true,
-            maintainAspectRatio:false
+    try{
+
+        const response =
+            await fetch('/api/dashboard-data');
+
+        const data =
+            await response.json();
+
+        // TOP CARDS
+
+        document.getElementById(
+            'voltageValue'
+        ).innerHTML =
+            data.voltage + " V";
+
+        document.getElementById(
+            'currentValue'
+        ).innerHTML =
+            data.current + " A";
+
+        document.getElementById(
+            'powerValue'
+        ).innerHTML =
+            data.power + " W";
+
+        document.getElementById(
+            'loadValue'
+        ).innerHTML =
+            data.load;
+
+        // ACTIVE DEVICES
+
+        document.getElementById(
+            'activeDevices'
+        ).innerHTML =
+            data.active_devices;
+
+        // BILL
+
+        document.getElementById(
+            'monthlyBill'
+        ).innerHTML =
+            "₹ " + data.monthly_bill;
+
+        document.getElementById(
+            'dailyUsage'
+        ).innerHTML =
+            data.daily_usage + " kWh";
+
+        document.getElementById(
+            'dailyCost'
+        ).innerHTML =
+            "₹ " + data.daily_cost;
+
+        // DEVICE STATUS
+
+        document.getElementById(
+            'lamp1Status'
+        ).innerHTML =
+            data.devices.lamp1 ? "ON" : "OFF";
+
+        document.getElementById(
+            'lamp2Status'
+        ).innerHTML =
+            data.devices.lamp2 ? "ON" : "OFF";
+
+        document.getElementById(
+            'fanStatus'
+        ).innerHTML =
+            data.devices.fan ? "ON" : "OFF";
+
+        document.getElementById(
+            'acStatus'
+        ).innerHTML =
+            data.devices.ac ? "ON" : "OFF";
+
+        document.getElementById(
+            'tvStatus'
+        ).innerHTML =
+            data.devices.tv ? "ON" : "OFF";
+
+        document.getElementById(
+            'securityStatus'
+        ).innerHTML =
+            data.devices.security
+            ? "ACTIVE"
+            : "DISABLED";
+
+        // POWER CHART
+
+        if(labels.length >= 10){
+
+            labels.shift();
+            powerHistory.shift();
+
         }
 
-    });
+        labels.push(
+            new Date()
+            .toLocaleTimeString()
+        );
 
-});
+        powerHistory.push(
+            data.power
+        );
+
+        powerChart.update();
+
+        // DEVICE CHART
+
+        deviceChart.data.datasets[0].data = [
+
+            data.devices.lamp1 +
+            data.devices.lamp2,
+
+            data.devices.fan,
+
+            data.devices.ac,
+
+            data.devices.tv,
+
+            data.devices.security
+
+        ];
+
+        deviceChart.update();
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+refreshDashboard();
+
+setInterval(
+
+    refreshDashboard,
+
+    3000
+
+);
 
 </script>
 

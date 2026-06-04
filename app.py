@@ -361,6 +361,63 @@ def live_data():
             "devices": device_states
 
         })
+    
+@app.route('/api/dashboard-data')
+def dashboard_data():
+
+    global device_states
+
+    voltage, current, power = readFirebase()
+
+    if power < 150:
+
+        load = "🟢 Light Load"
+
+    elif power < 500:
+
+        load = "🟡 Moderate Load"
+
+    elif power < 1200:
+
+        load = "🟠 High Load"
+
+    else:
+
+        load = "🔴 Critical Load"
+
+    active_devices = sum(device_states.values())
+
+    monthly_bill = round(
+        ((power / 1000) * 8 * 30 * 8),
+        2
+    )
+
+    daily_usage = round(
+        ((power / 1000) * 8),
+        2
+    )
+
+    daily_cost = round(
+        ((power / 1000) * 8 * 8),
+        2
+    )
+
+    return jsonify({
+
+        "voltage": voltage,
+        "current": current,
+        "power": power,
+        "load": load,
+
+        "active_devices": active_devices,
+
+        "monthly_bill": monthly_bill,
+        "daily_usage": daily_usage,
+        "daily_cost": daily_cost,
+
+        "devices": device_states
+
+    })
 
 @app.route('/api/control-data')
 def control_data():
@@ -473,6 +530,8 @@ def charts():
         devices=devices
 
     )
+
+
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)

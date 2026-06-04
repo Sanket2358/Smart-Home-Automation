@@ -310,57 +310,37 @@ def live_data():
 
     global device_states
 
-    try:
+    voltage, current, power = readFirebase()
 
-        # ================= GET REAL DATA =================
+    if power < 300:
 
-        voltage, current, power = readFirebase()
+        load = "🟢 Light Load"
 
-        devices = device_states
+    elif power < 800:
 
-        # ================= LOAD STATUS =================
+        load = "🟡 Moderate Load"
 
-        if power < 150:
+    elif power < 1500:
 
-            load = "🟢 Light Load"
+        load = "🟠 High Load"
 
-        elif power < 500:
+    else:
 
-            load = "🟡 Moderate Load"
+        load = "🔴 Critical Load"
 
-        elif power < 1200:
+    return jsonify({
 
-            load = "🟠 High Load"
+        "voltage": voltage,
 
-        else:
+        "current": current,
 
-            load = "🔴 Critical Load"
+        "power": power,
 
-        # ================= RETURN REAL DATA =================
+        "load": load,
 
-        return jsonify({
+        "devices": device_states
 
-            "voltage": voltage,
-            "current": current,
-            "power": power,
-            "load": load,
-            "devices": devices
-
-        })
-
-    except Exception as e:
-
-        print("Live API Error:", e)
-
-        return jsonify({
-
-            "voltage": 0,
-            "current": 0,
-            "power": 0,
-            "load": "Error",
-            "devices": device_states
-
-        })
+    })
     
 @app.route('/api/dashboard-data')
 def dashboard_data():
@@ -503,35 +483,28 @@ def control_data():
 @app.route('/charts')
 def charts():
 
-    devices = {
+    global device_states
 
-        "lamp1": 1,
-        "lamp2": 0,
-        "fan": 1,
-        "ac": 0,
-        "tv": 1,
-        "security": 1
-
-    }
-
-    slot1 = 230
-    slot2 = 2.5
-    slot3 = 580
-    slot4 = "NORMAL"
+    voltage, current, power = readFirebase()
 
     return render_template(
 
         'charts.html',
 
-        slot1=slot1,
-        slot2=slot2,
-        slot3=slot3,
-        slot4=slot4,
-        devices=devices
+        slot1=voltage,
+        slot2=current,
+        slot3=power,
+
+        devices=device_states
 
     )
 
 
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)
+	app.run(
+        host='0.0.0.0',
+        port=5000,
+        threaded=True,
+        debug=False
+    )

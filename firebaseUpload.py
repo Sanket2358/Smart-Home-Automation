@@ -38,13 +38,6 @@ def writeFirebase(appliance, action):
 
 def readFirebase():
 
-    # Base voltage
-    voltage = random.randint(220, 240)
-
-    # Base current
-    current = 0.3
-
-    # Calculate total power
     total_power = 0
 
     for device, status in device_states.items():
@@ -53,12 +46,31 @@ def readFirebase():
 
             total_power += device_power[device]
 
-    # Small random fluctuation
-    total_power += random.randint(1, 5)
+    # Voltage
 
-    # Calculate current using formula:
-    # Current = Power / Voltage
+    if total_power > 0:
 
-    current += round(total_power / voltage, 2)
+        voltage = random.randint(228, 235)
 
-    return voltage, round(current, 2), total_power
+    else:
+
+        voltage = 230
+
+    # Current
+
+    if total_power > 0:
+
+        current = round(
+            total_power / voltage,
+            2
+        )
+
+    else:
+
+        current = 0
+
+    return (
+        voltage,
+        current,
+        total_power
+    )

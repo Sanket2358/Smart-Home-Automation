@@ -15,7 +15,117 @@ name = ''
 
 app = Flask(__name__)
 
+def initialize_device_table():
+
+    con = sqlite3.connect('mydatabase.db')
+
+    cursor = con.cursor()
+
+    cursor.execute("""
+
+        CREATE TABLE IF NOT EXISTS DeviceState(
+
+            lamp1 INTEGER,
+            lamp2 INTEGER,
+            fan INTEGER,
+            ac INTEGER,
+            tv INTEGER,
+            security INTEGER
+
+        )
+
+    """)
+
+    cursor.execute(
+
+        "SELECT COUNT(*) FROM DeviceState"
+
+    )
+
+    count = cursor.fetchone()[0]
+
+    if count == 0:
+
+        cursor.execute("""
+
+            INSERT INTO DeviceState
+
+            VALUES(
+
+                0,0,0,0,0,0
+
+            )
+
+        """)
+
+    con.commit()
+
+    con.close()
 app.secret_key = '1234'
+
+
+def save_device_states():
+
+    con = sqlite3.connect('mydatabase.db')
+
+    cursor = con.cursor()
+
+    cursor.execute("""
+
+        UPDATE DeviceState
+
+        SET
+
+        lamp1=?,
+        lamp2=?,
+        fan=?,
+        ac=?,
+        tv=?,
+        security=?
+
+    """,
+
+    (
+
+        device_states['lamp1'],
+        device_states['lamp2'],
+        device_states['fan'],
+        device_states['ac'],
+        device_states['tv'],
+        device_states['security']
+
+    ))
+
+    con.commit()
+
+    con.close()
+
+def load_device_states():
+
+    con = sqlite3.connect('mydatabase.db')
+
+    cursor = con.cursor()
+
+    cursor.execute(
+        "SELECT * FROM DeviceState"
+    )
+
+    row = cursor.fetchone()
+
+    con.close()
+
+    if row:
+
+        device_states['lamp1'] = row[0]
+        device_states['lamp2'] = row[1]
+        device_states['fan'] = row[2]
+        device_states['ac'] = row[3]
+        device_states['tv'] = row[4]
+        device_states['security'] = row[5]
+initialize_device_table()
+
+load_device_states()
+
 app.config["CACHE_TYPE"] = "null"
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
@@ -193,6 +303,7 @@ def control():
     # ================= UPDATE DEVICE STATE =================
 
     device_states[appliance] = action
+    save_device_states()
 
     try:
 
@@ -257,6 +368,7 @@ def smart_mode():
         device_states['tv'] = 0
         device_states['ac'] = 1
 
+    save_device_states()
     return jsonify({
 
         "message": f"{mode} mode activated"
